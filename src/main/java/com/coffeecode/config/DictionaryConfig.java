@@ -14,22 +14,16 @@ import com.coffeecode.exception.DictionaryException;
  */
 
 public final class DictionaryConfig {
-    private static final String ENGLISH_PATH = "src/main/resources/dictionary/english.json";
-    private static final String INDONESIAN_PATH = "src/main/resources/dictionary/indonesian.json";
+    private static final String DICTIONARY_PATH = "src/main/resources/dictionary/english.json";
 
     // Prevent instantiation
     private DictionaryConfig() {
         throw new UnsupportedOperationException("Utility class");
     }
 
-    public static String getEnglishPath() {
-        validatePath(ENGLISH_PATH);
-        return ENGLISH_PATH;
-    }
-
-    public static String getIndonesianPath() {
-        validatePath(INDONESIAN_PATH);
-        return INDONESIAN_PATH;
+    public static String getDictionaryPath() {
+        validatePath(DICTIONARY_PATH);
+        return DICTIONARY_PATH;
     }
 
     private static void validatePath(String path) {

@@ -22,18 +22,16 @@ public class JsonLoader implements IDictionaryLoader {
         DictionaryData.Builder builder = DictionaryData.builder();
 
         try {
-            JsonNode englishData = mapper.readTree(new File(DictionaryConfig.getEnglishPath()))
+            JsonNode dictionaryData = mapper.readTree(new File(DictionaryConfig.getDictionaryPath()))
                     .get("data");
 
-            // Load only english.json since it contains both translations
-            for (JsonNode entry : englishData) {
+            for (JsonNode entry : dictionaryData) {
                 builder.addEntry(
                         entry.get("english").asText(),
                         entry.get("indonesian").asText());
             }
 
             return builder.build();
-
         } catch (IOException e) {
             throw new DictionaryException("Failed to load dictionary", e);
         }
