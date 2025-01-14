@@ -18,6 +18,8 @@ public class ArrayVisualizationPanel extends JPanel implements SearchStepListene
     private static final int CELL_WIDTH = 60;
     private static final int CELL_HEIGHT = 40;
     private static final int V_GAP = 20;
+    private static final int H_GAP = 10;
+    private static final int MAX_ITEMS_PER_ROW = 10;
 
     private List<String> words;
     private SearchStep currentStep;
@@ -38,7 +40,10 @@ public class ArrayVisualizationPanel extends JPanel implements SearchStepListene
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
 
-        int startX = (getWidth() - (words.size() * CELL_WIDTH)) / 2;
+        // Calculate starting position
+        int itemsPerRow = Math.min(MAX_ITEMS_PER_ROW, words.size());
+        int totalWidth = itemsPerRow * (CELL_WIDTH + H_GAP) - H_GAP;
+        int startX = (getWidth() - totalWidth) / 2;
         int startY = getHeight() / 2;
 
         drawCells(g2d, startX, startY);
@@ -46,9 +51,17 @@ public class ArrayVisualizationPanel extends JPanel implements SearchStepListene
     }
 
     private void drawCells(Graphics2D g2d, int startX, int startY) {
+        if (words == null) return;
+
+        int totalRows = (int) Math.ceil(words.size() / (double) MAX_ITEMS_PER_ROW);
+        int startingY = startY - (totalRows * (CELL_HEIGHT + V_GAP)) / 2;
+
         for (int i = 0; i < words.size(); i++) {
-            int x = startX + (i * CELL_WIDTH);
-            int y = startY - CELL_HEIGHT;
+            int row = i / MAX_ITEMS_PER_ROW;
+            int col = i % MAX_ITEMS_PER_ROW;
+
+            int x = startX + (col * (CELL_WIDTH + H_GAP));
+            int y = startingY + (row * (CELL_HEIGHT + V_GAP));
 
             // Draw cell background
             g2d.setColor(getCellColor(i));
@@ -65,24 +78,29 @@ public class ArrayVisualizationPanel extends JPanel implements SearchStepListene
     }
 
     private void drawIndices(Graphics2D g2d, int startX, int startY) {
-        if (currentStep == null)
-            return;
+        if (currentStep == null) return;
+
+        int totalRows = (int) Math.ceil(words.size() / (double) MAX_ITEMS_PER_ROW);
+        int startingY = startY - (totalRows * (CELL_HEIGHT + V_GAP)) / 2;
 
         g2d.setColor(Color.BLACK);
+        
         // Draw index numbers
         for (int i = 0; i < words.size(); i++) {
-            int x = startX + (i * CELL_WIDTH);
+            int row = i / MAX_ITEMS_PER_ROW;
+            int col = i % MAX_ITEMS_PER_ROW;
+
+            int x = startX + (col * (CELL_WIDTH + H_GAP));
+            int y = startingY + (row * (CELL_HEIGHT + V_GAP));
+
             String index = String.valueOf(i);
-            drawCenteredString(g2d, index, x, startY + V_GAP,
-                    CELL_WIDTH, CELL_HEIGHT / 2);
+            drawCenteredString(g2d, index, x, y + CELL_HEIGHT, CELL_WIDTH, V_GAP);
         }
 
         // Draw pointers
-        if (currentStep != null) {
-            drawPointer(g2d, "L", currentStep.getLeft(), startX, startY);
-            drawPointer(g2d, "M", currentStep.getMid(), startX, startY);
-            drawPointer(g2d, "R", currentStep.getRight(), startX, startY);
-        }
+        drawPointer(g2d, "L", currentStep.getLeft(), startX, startingY);
+        drawPointer(g2d, "M", currentStep.getMid(), startX, startingY);
+        drawPointer(g2d, "R", currentStep.getRight(), startX, startingY);
     }
 
     private Color getCellColor(int index) {
@@ -104,8 +122,13 @@ public class ArrayVisualizationPanel extends JPanel implements SearchStepListene
 
     private void drawPointer(Graphics2D g2d, String label, int index,
             int startX, int startY) {
-        int x = startX + (index * CELL_WIDTH) + CELL_WIDTH / 2;
-        g2d.drawString(label, x - 5, startY + V_GAP + CELL_HEIGHT);
+        int row = index / MAX_ITEMS_PER_ROW;
+        int col = index % MAX_ITEMS_PER_ROW;
+
+        int x = startX + (col * (CELL_WIDTH + H_GAP)) + CELL_WIDTH/2;
+        int y = startY + (row * (CELL_HEIGHT + V_GAP)) + CELL_HEIGHT + V_GAP;
+
+        g2d.drawString(label, x - 5, y + 15);
     }
 
     private void drawCenteredString(Graphics2D g2d, String text, int x, int y,
