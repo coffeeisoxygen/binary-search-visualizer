@@ -14,15 +14,25 @@ import com.coffeecode.model.IDictionaryData;
  */
 public class App {
     /**
+     * Private constructor to prevent instantiation.
+     * This is a utility class with only static methods.
+     */
+    private App() {
+        throw new UnsupportedOperationException("Utility class");
+    }
+
+    /**
      * The main entry point of the application.
      * Loads the dictionary data and demonstrates basic translation functionality.
      * 
-     * <p>This method:
+     * <p>
+     * This method:
      * <ul>
-     *   <li>Initializes a dictionary loader</li>
-     *   <li>Loads dictionary data from JSON files</li>
-     *   <li>Displays all dictionary entries</li>
-     *   <li>Demonstrates translation in both directions (English to Indonesian and vice versa)</li>
+     * <li>Initializes a dictionary loader</li>
+     * <li>Loads dictionary data from JSON files</li>
+     * <li>Displays all dictionary entries</li>
+     * <li>Demonstrates translation in both directions (English to Indonesian and
+     * vice versa)</li>
      * </ul>
      * 
      * @param args command line arguments (not used)

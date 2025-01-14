@@ -22,7 +22,8 @@ public class JsonLoader implements IDictionaryLoader {
     private final ObjectMapper mapper;
 
     /**
-     * Constructs a new JsonLoader with an ObjectMapper instance.
+     * Constructs a new JsonLoader.
+     * Initializes the JSON object mapper for parsing dictionary files.
      */
     public JsonLoader() {
         this.mapper = new ObjectMapper();

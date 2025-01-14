@@ -24,6 +24,15 @@ public class DictionaryConfig {
     private static final String DICTIONARY_PATH = "src/main/resources/dictionary/english.json";
 
     /**
+     * Private constructor to prevent instantiation.
+     * This is a utility class with only static methods.
+     */
+    @SuppressWarnings("unused")
+    public DictionaryConfig() {
+        throw new UnsupportedOperationException("Utility class");
+    }
+
+    /**
      * Gets the path to the dictionary data file.
      * 
      * @return String representing the path to the dictionary file
