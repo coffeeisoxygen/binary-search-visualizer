@@ -3,8 +3,6 @@ package com.coffeecode;
 import com.coffeecode.loader.IDictionaryLoader;
 import com.coffeecode.loader.JsonLoader;
 import com.coffeecode.model.IDictionaryData;
-import com.coffeecode.service.DictionaryTranslationService;
-import com.coffeecode.service.TranslationService;
 
 public class App {
     public static void main(String[] args) {
@@ -12,17 +10,17 @@ public class App {
             IDictionaryLoader loader = new JsonLoader();
             IDictionaryData dictionary = loader.loadDictionaries();
 
-            TranslationService translationService = new DictionaryTranslationService(dictionary);
+            // Display translations directly
+            System.out.println("English to Indonesian:");
+            dictionary.getEnglishToIndonesian()
+                    .forEach((k, v) -> System.out.println(k + " -> " + v));
 
-            // Display translations
-            translationService.displayAllTranslations();
-
-            // Test specific translations
+            // Test translations
             System.out.println("\nTest translations:");
             System.out.println("'cat' in Indonesian: " +
-                    translationService.translateToIndonesian("cat"));
+                    dictionary.translateEnglishToIndonesian("cat"));
             System.out.println("'buku' in English: " +
-                    translationService.translateToEnglish("buku"));
+                    dictionary.translateIndonesianToEnglish("buku"));
 
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
