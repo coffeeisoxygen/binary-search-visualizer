@@ -30,7 +30,7 @@ public class App implements DictionaryObserver {
 
         // Create Main Frame
         frame = new JFrame("Dictionary Translator");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
 
         // Create Split Pane
@@ -56,7 +56,10 @@ public class App implements DictionaryObserver {
 
     @Override
     public void onTranslationComplete(String result) {
-        inputPanel.setResult(result);
+        JOptionPane.showMessageDialog(frame, 
+            "Translation: " + result,
+            "Translation Result", 
+            JOptionPane.INFORMATION_MESSAGE);
     }
 
     @Override
