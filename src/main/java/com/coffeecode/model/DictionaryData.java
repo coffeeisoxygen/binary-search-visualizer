@@ -9,6 +9,11 @@ import java.util.TreeMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Implementation of {@link IDictionaryData} that stores and manages dictionary
+ * entries.
+ * Uses TreeMap for sorted storage of word pairs.
+ */
 public class DictionaryData implements IDictionaryData {
     private static final Logger LOGGER = LoggerFactory.getLogger(DictionaryData.class);
     private final TreeMap<String, String> dictionary;
@@ -78,15 +83,19 @@ public class DictionaryData implements IDictionaryData {
         return new Builder();
     }
 
+    /**
+     * Builder class for creating DictionaryData instances.
+     * Provides methods to add dictionary entries and build the final object.
+     */
     public static class Builder {
         private final Map<String, String> dictionary = new HashMap<>();
 
         /**
-         * Adds an entry to the dictionary.
+         * Adds a word pair to the dictionary.
          *
-         * @param english    the English word.
-         * @param indonesian the Indonesian translation.
-         * @return the Builder instance.
+         * @param english    the English word
+         * @param indonesian the Indonesian translation
+         * @return this Builder instance
          */
         public Builder addEntry(String english, String indonesian) {
             dictionary.put(english, indonesian);
@@ -95,9 +104,9 @@ public class DictionaryData implements IDictionaryData {
         }
 
         /**
-         * Builds and returns a DictionaryData instance.
+         * Builds and returns a new DictionaryData instance.
          *
-         * @return a new DictionaryData instance.
+         * @return a new DictionaryData instance
          */
         public DictionaryData build() {
             LOGGER.info("Building DictionaryData with {} entries", dictionary.size());

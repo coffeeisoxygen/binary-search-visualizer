@@ -9,11 +9,9 @@ import com.coffeecode.exception.DictionaryException;
 
 /**
  * Configuration class for dictionary settings.
- * This class provides the path to the dictionary file and validates its
- * existence.
- * It is a utility class and cannot be instantiated.
+ * Provides configuration values for dictionary file paths and other settings.
  */
-public final class DictionaryConfig {
+public class DictionaryConfig {
 
     /**
      * Logger instance for logging information and errors.
@@ -26,21 +24,11 @@ public final class DictionaryConfig {
     private static final String DICTIONARY_PATH = "src/main/resources/dictionary/english.json";
 
     /**
-     * Private constructor to prevent instantiation.
-     * Throws {@link UnsupportedOperationException} if called.
+     * Gets the path to the dictionary data file.
+     * 
+     * @return String representing the path to the dictionary file
      */
-    private DictionaryConfig() {
-        throw new UnsupportedOperationException("Utility class");
-    }
-
-    /**
-     * Returns the path to the dictionary file.
-     * Validates the existence of the file before returning the path.
-     *
-     * @return the path to the dictionary file.
-     * @throws DictionaryException if the dictionary file does not exist.
-     */
-    public static String getDictionaryPath() {
+    public String getDictionaryPath() {
         validatePath(DICTIONARY_PATH);
         return DICTIONARY_PATH;
     }

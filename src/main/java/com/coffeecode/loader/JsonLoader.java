@@ -1,6 +1,6 @@
 /**
- * The `JsonLoader` class implements the `IDictionaryLoader` interface to load dictionary data from a
- * JSON file using Jackson library in Java.
+ * Implementation of {@link IDictionaryLoader} that loads dictionary data from JSON files.
+ * Uses Jackson library for JSON parsing.
  */
 package com.coffeecode.loader;
 
@@ -29,18 +29,21 @@ public class JsonLoader implements IDictionaryLoader {
     }
 
     /**
-     * Loads dictionary data from a JSON file specified in the DictionaryConfig.
-     *
-     * @return an IDictionaryData instance containing the loaded dictionary data.
-     * @throws IOException if an I/O error occurs while reading the JSON file.
+     * Loads dictionary data from a JSON file specified in the
+     * {@link DictionaryConfig}.
+     * 
+     * @return An {@link IDictionaryData} object containing the loaded dictionary
+     *         entries
+     * @throws IOException if there is an error reading or parsing the JSON file
      */
     @Override
     public IDictionaryData loadDictionaries() throws IOException {
         DictionaryData.Builder builder = DictionaryData.builder();
 
         try {
-            LOGGER.info("Loading dictionary from path: {}", DictionaryConfig.getDictionaryPath());
-            JsonNode dictionaryData = mapper.readTree(new File(DictionaryConfig.getDictionaryPath()))
+            DictionaryConfig config = new DictionaryConfig();
+            LOGGER.info("Loading dictionary from path: {}", config.getDictionaryPath());
+            JsonNode dictionaryData = mapper.readTree(new File(config.getDictionaryPath()))
                     .get("data");
 
             for (JsonNode entry : dictionaryData) {
