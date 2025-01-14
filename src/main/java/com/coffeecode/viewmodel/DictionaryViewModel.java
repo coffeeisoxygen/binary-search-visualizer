@@ -17,7 +17,7 @@ public class DictionaryViewModel {
     private final IDictionaryLoader loader;
     private IDictionaryData dictionary;
     private final ExecutorService executor;
-    private DictionaryObserver observer;  // Add this field
+    private DictionaryObserver observer;
 
     public DictionaryViewModel() {
         this.loader = new JsonLoader();
@@ -46,8 +46,14 @@ public class DictionaryViewModel {
             return "";
         }
         String result = dictionary.translate(word);
-        if (observer != null) {
-            observer.onTranslationComplete(result);
+        if (result == null || result.isEmpty()) {
+            if (observer != null) {
+                observer.onError("Translation not found for word: " + word);
+            }
+        } else {
+            if (observer != null) {
+                observer.onTranslationComplete(result);
+            }
         }
         return result;
     }

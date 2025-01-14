@@ -24,7 +24,7 @@ public class App implements DictionaryObserver {
         viewModel.initialize();
 
         // Initialize Panels
-        inputPanel = new InputPanel(viewModel);
+        inputPanel = new InputPanel(viewModel, this);
         dictionaryPanel = new DictionaryPanel(viewModel);
         visualizationPanel = new VisualizationPanel();
 
@@ -34,16 +34,20 @@ public class App implements DictionaryObserver {
         frame.setSize(800, 600);
 
         // Create Split Pane
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-        splitPane.setDividerLocation(400);
+        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+        splitPane.setDividerLocation(100);
 
         // Add Panels to Split Pane
-        splitPane.setLeftComponent(dictionaryPanel.getPanelWithInput(inputPanel));
-        splitPane.setRightComponent(visualizationPanel.getPanel());
+        splitPane.setTopComponent(inputPanel.getPanel());
+        splitPane.setBottomComponent(visualizationPanel.getPanel());
 
         // Add Split Pane to Frame
         frame.add(splitPane);
         frame.setLocationRelativeTo(null);
+    }
+
+    public void showDictionary() {
+        dictionaryPanel.showDialog(frame);
     }
 
     public void show() {
