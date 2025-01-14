@@ -1,59 +1,81 @@
 package com.coffeecode;
 
-import java.io.IOException;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 
-import com.coffeecode.loader.IDictionaryLoader;
-import com.coffeecode.loader.JsonLoader;
-import com.coffeecode.model.IDictionaryData;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
-/**
- * Main application class for the Dictionary application.
- * This class provides the entry point for the dictionary translation program
- * which loads dictionary data from JSON files and performs translations between
- * English and Indonesian languages.
- */
-public class App {
-    /**
-     * Private constructor to prevent instantiation.
-     * This is a utility class with only static methods.
-     */
-    private App() {
-        throw new UnsupportedOperationException("Utility class");
+import com.coffeecode.viewmodel.DictionaryObserver;
+import com.coffeecode.viewmodel.DictionaryViewModel;
+
+public class App implements DictionaryObserver {
+    private final DictionaryViewModel viewModel;
+    private final JFrame frame;
+    private final JTextField searchField;
+    private final JLabel resultLabel;
+
+    public App() {
+        // Initialize ViewModel
+        viewModel = new DictionaryViewModel();
+        viewModel.initialize();
+
+        // Create UI components
+        frame = new JFrame("Dictionary Translator");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400, 200);
+        frame.setLayout(new BorderLayout(10, 10));
+
+        // Search panel
+        JPanel searchPanel = new JPanel(new FlowLayout());
+        searchField = new JTextField(20);
+        JButton searchButton = new JButton("Translate");
+        searchPanel.add(searchField);
+        searchPanel.add(searchButton);
+
+        // Result panel
+        JPanel resultPanel = new JPanel(new FlowLayout());
+        resultLabel = new JLabel("Enter a word to translate");
+        resultPanel.add(resultLabel);
+
+        // Add components to frame
+        frame.add(searchPanel, BorderLayout.NORTH);
+        frame.add(resultPanel, BorderLayout.CENTER);
+
+        // Add action listener
+        searchButton.addActionListener(e -> {
+            String word = searchField.getText().trim();
+            String translation = viewModel.translate(word);
+            onTranslationComplete(translation != null ? translation : "Not found");
+        });
+
+        // Center on screen
+        frame.setLocationRelativeTo(null);
     }
 
-    /**
-     * The main entry point of the application.
-     * Loads the dictionary data and demonstrates basic translation functionality.
-     * 
-     * <p>
-     * This method:
-     * <ul>
-     * <li>Initializes a dictionary loader</li>
-     * <li>Loads dictionary data from JSON files</li>
-     * <li>Displays all dictionary entries</li>
-     * <li>Demonstrates translation in both directions (English to Indonesian and
-     * vice versa)</li>
-     * </ul>
-     * 
-     * @param args command line arguments (not used)
-     */
+    public void show() {
+        frame.setVisible(true);
+    }
+
+    @Override
+    public void onTranslationComplete(String result) {
+        resultLabel.setText("Translation: " + result);
+    }
+
+    @Override
+    public void onError(String errorMessage) {
+        JOptionPane.showMessageDialog(frame, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
     public static void main(String[] args) {
-        try {
-            IDictionaryLoader loader = new JsonLoader();
-            IDictionaryData dictionary = loader.loadDictionaries();
-
-            // Display translations
-            System.out.println("Dictionary entries:");
-            dictionary.getDictionary()
-                    .forEach((k, v) -> System.out.println(k + " -> " + v));
-
-            // Test translations
-            System.out.println("\nTest translations:");
-            System.out.println("'cat' translation: " + dictionary.translate("cat"));
-            System.out.println("'buku' translation: " + dictionary.translate("buku"));
-
-        } catch (IOException e) {
-            System.err.println("Error: " + e.getMessage());
-        }
+        SwingUtilities.invokeLater(() -> {
+            App app = new App();
+            app.show();
+        });
     }
 }
