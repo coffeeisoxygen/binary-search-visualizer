@@ -14,6 +14,7 @@ import com.coffeecode.model.IDictionaryData;
 
 public class DictionaryViewModel {
     private static final Logger LOGGER = LoggerFactory.getLogger(DictionaryViewModel.class);
+    private final VisualizerViewModel visualizerViewModel;
     private final IDictionaryLoader loader;
     private IDictionaryData dictionary;
     private final ExecutorService executor;
@@ -21,6 +22,7 @@ public class DictionaryViewModel {
 
     public DictionaryViewModel() {
         this.loader = new JsonLoader();
+        this.visualizerViewModel = new VisualizerViewModel();
         this.executor = Executors.newSingleThreadExecutor();
     }
 
@@ -31,10 +33,15 @@ public class DictionaryViewModel {
     public void initialize() {
         try {
             dictionary = loader.loadDictionaries();
+            visualizerViewModel.initialize(dictionary.getDictionary());
             LOGGER.info("Dictionary initialized successfully");
         } catch (IOException e) {
             LOGGER.error("Failed to initialize dictionary", e);
         }
+    }
+
+    public VisualizerViewModel getVisualizerViewModel() {
+        return visualizerViewModel;
     }
 
     public String translate(String word) {
