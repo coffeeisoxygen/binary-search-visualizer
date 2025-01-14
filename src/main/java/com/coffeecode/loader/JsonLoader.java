@@ -1,15 +1,22 @@
 package com.coffeecode.loader;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import com.coffeecode.exception.CustomException;
 import com.coffeecode.model.DictionaryData;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JsonLoader {
+    private JsonLoader() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static DictionaryData loadDictionaries() {
         DictionaryData dictionary = new DictionaryData();
         ObjectMapper mapper = new ObjectMapper();
@@ -39,8 +46,10 @@ public class JsonLoader {
                     entry.get("indonesian"),
                     entry.get("english")));
 
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to load dictionaries: " + e.getMessage(), e);
+        } catch (JsonProcessingException e) {
+            throw new CustomException("Failed to process JSON: " + e.getMessage(), e);
+        } catch (IOException e) {
+            throw new CustomException("Failed to load dictionaries: " + e.getMessage(), e);
         }
 
         return dictionary;
