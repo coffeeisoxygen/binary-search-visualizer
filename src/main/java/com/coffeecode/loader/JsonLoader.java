@@ -7,26 +7,31 @@ import java.util.Map;
 
 import com.coffeecode.exception.CustomException;
 import com.coffeecode.model.DictionaryData;
+import com.coffeecode.model.IDictionaryData;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class JsonLoader {
-    private JsonLoader() {
-        throw new IllegalStateException("Utility class");
+public class JsonLoader implements DictionaryLoader {
+    private final ObjectMapper mapper;
+    private final String englishPath;
+    private final String indonesianPath;
+
+    public JsonLoader() {
+        this.mapper = new ObjectMapper();
+        this.englishPath = "src/main/resources/dictionary/english.json";
+        this.indonesianPath = "src/main/resources/dictionary/indonesian.json";
     }
 
-    public static DictionaryData loadDictionaries() {
-        DictionaryData dictionary = new DictionaryData();
-        ObjectMapper mapper = new ObjectMapper();
+    @Override
+    public IDictionaryData loadDictionaries() {
+        IDictionaryData dictionary = new DictionaryData();
 
         try {
-            // Read JSON files
-            JsonNode englishJson = mapper.readTree(new File("src/main/resources/dictionary/english.json"));
-            JsonNode indonesianJson = mapper.readTree(new File("src/main/resources/dictionary/indonesian.json"));
+            JsonNode englishJson = mapper.readTree(new File(englishPath));
+            JsonNode indonesianJson = mapper.readTree(new File(indonesianPath));
 
-            // Get data arrays
             List<Map<String, String>> englishData = mapper.convertValue(
                     englishJson.get("data"),
                     new TypeReference<List<Map<String, String>>>() {
@@ -37,7 +42,6 @@ public class JsonLoader {
                     new TypeReference<List<Map<String, String>>>() {
                     });
 
-            // Populate dictionary
             englishData.forEach(entry -> dictionary.addEnglishToIndonesian(
                     entry.get("english"),
                     entry.get("indonesian")));
