@@ -132,4 +132,11 @@ public class ArrayVisualizationPanel extends JPanel implements SearchStepListene
         this.isPaused = paused;
     }
 
+    public void reset() {
+        this.words = null;
+        this.currentStep = null;
+        this.isPaused = false;
+        repaint();
+    }
+
 }

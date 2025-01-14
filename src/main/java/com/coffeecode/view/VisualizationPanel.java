@@ -1,117 +1,72 @@
 package com.coffeecode.view;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
+import java.util.List;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.SwingConstants;
 
-public class VisualizationPanel {
-    private final JPanel panel;
-    private final JLabel lowLabel;
-    private final JLabel midLabel;
-    private final JLabel highLabel;
-    private final JSlider speedSlider;
-    private final JButton playPauseButton;
-    private final JButton stopButton;
-    private final JButton resetButton;
+import com.coffeecode.viewmodel.VisualizerViewModel;
+import com.coffeecode.visualizer.BinarySearchVisualizer.SearchState;
+import com.coffeecode.visualizer.SearchStep;
+import com.coffeecode.visualizer.SearchStepListener;
 
-    public VisualizationPanel() {
-        panel = new JPanel(new BorderLayout());
-        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+public class VisualizationPanel extends JPanel implements SearchStepListener, ControlPanel.ControlListener {
+    private final ArrayVisualizationPanel arrayPanel;
+    private final ControlPanel controlPanel;
+    private final transient VisualizerViewModel viewModel;
+    private boolean isPlaying;
 
-        // Visualization area
-        JPanel visualArea = new JPanel(new BorderLayout());
-        visualArea.setBorder(BorderFactory.createTitledBorder("Binary Search Visualization"));
-        visualArea.setPreferredSize(new Dimension(700, 400));
+    public VisualizationPanel(VisualizerViewModel viewModel) {
+        this.viewModel = viewModel;
+        this.isPlaying = false;
 
-        // Placeholder for visualization process
-        JLabel placeholder = new JLabel("Visualization Area", SwingConstants.CENTER);
-        visualArea.add(placeholder, BorderLayout.CENTER);
+        setLayout(new BorderLayout());
+        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Control panel (low, mid, high display + buttons and slider)
-        JPanel controlPanel = new JPanel();
-        controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.Y_AXIS));
-        controlPanel.setBorder(BorderFactory.createTitledBorder("Controls"));
+        // Initialize components
+        arrayPanel = new ArrayVisualizationPanel();
+        controlPanel = new ControlPanel();
 
-        // Labels for low, mid, high
-        JPanel indicatorPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 5));
-        lowLabel = new JLabel("Low: -");
-        midLabel = new JLabel("Mid: -");
-        highLabel = new JLabel("High: -");
+        // Add components
+        add(arrayPanel, BorderLayout.CENTER);
+        add(controlPanel, BorderLayout.SOUTH);
 
-        indicatorPanel.add(lowLabel);
-        indicatorPanel.add(midLabel);
-        indicatorPanel.add(highLabel);
-
-        // Button panel
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
-        playPauseButton = new JButton("Play");
-        stopButton = new JButton("Stop");
-        resetButton = new JButton("Reset");
-
-        buttonPanel.add(playPauseButton);
-        buttonPanel.add(stopButton);
-        buttonPanel.add(resetButton);
-
-        // Speed slider
-        JPanel sliderPanel = new JPanel(new BorderLayout());
-        sliderPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
-        JLabel sliderLabel = new JLabel("Speed:", SwingConstants.LEFT);
-        speedSlider = new JSlider(1, 10, 5);
-        speedSlider.setPaintTicks(true);
-        speedSlider.setPaintLabels(true);
-        speedSlider.setMajorTickSpacing(1);
-
-        sliderPanel.add(sliderLabel, BorderLayout.WEST);
-        sliderPanel.add(speedSlider, BorderLayout.CENTER);
-
-        // Add all components to control panel
-        controlPanel.add(indicatorPanel);
-        controlPanel.add(buttonPanel);
-        controlPanel.add(sliderPanel);
-
-        // Add components to the main panel
-        panel.add(visualArea, BorderLayout.CENTER);
-        panel.add(controlPanel, BorderLayout.SOUTH);
+        // Setup listeners after construction
+        setupListeners();
     }
 
-    public JPanel getPanel() {
-        return panel;
+    private void setupListeners() {
+        viewModel.addListener(this);
+        controlPanel.setControlListener(this);
     }
 
-    // Public methods to update UI (placeholders for now)
-    public void updateLow(int low) {
-        lowLabel.setText("Low: " + low);
+    @Override
+    public void onSearchStep(SearchStep step, List<String> words) {
+        arrayPanel.onSearchStep(step, words);
     }
 
-    public void updateMid(int mid) {
-        midLabel.setText("Mid: " + mid);
+    @Override
+    public void onSearchComplete(SearchState finalState) {
+        arrayPanel.onSearchComplete(finalState);
+        isPlaying = false;
     }
 
-    public void updateHigh(int high) {
-        highLabel.setText("High: " + high);
+    @Override
+    public void onPlayPause() {
+        isPlaying = !isPlaying;
+        arrayPanel.setPaused(!isPlaying);
     }
 
-    public JButton getPlayPauseButton() {
-        return playPauseButton;
+    @Override
+    public void onStop() {
+        isPlaying = false;
+        arrayPanel.setPaused(true);
     }
 
-    public JButton getStopButton() {
-        return stopButton;
-    }
-
-    public JButton getResetButton() {
-        return resetButton;
-    }
-
-    public JSlider getSpeedSlider() {
-        return speedSlider;
+    @Override
+    public void onReset() {
+        isPlaying = false;
+        arrayPanel.reset();
     }
 }

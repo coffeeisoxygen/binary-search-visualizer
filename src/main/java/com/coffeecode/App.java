@@ -23,10 +23,10 @@ public class App implements DictionaryObserver {
         viewModel = new DictionaryViewModel();
         viewModel.initialize();
 
-        // Initialize Panels
+        // Initialize Panels with proper dependencies
         inputPanel = new InputPanel(viewModel, this);
         dictionaryPanel = new DictionaryPanel(viewModel);
-        visualizationPanel = new VisualizationPanel();
+        visualizationPanel = new VisualizationPanel(viewModel.getVisualizerViewModel());
 
         // Create Main Frame
         frame = new JFrame("Dictionary Translator");
@@ -39,7 +39,7 @@ public class App implements DictionaryObserver {
 
         // Add Panels to Split Pane
         splitPane.setTopComponent(inputPanel.getPanel());
-        splitPane.setBottomComponent(visualizationPanel.getPanel());
+        splitPane.add(visualizationPanel); // Changed: directly add JPanel
 
         // Add Split Pane to Frame
         frame.add(splitPane);
