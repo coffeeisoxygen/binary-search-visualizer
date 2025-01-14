@@ -17,10 +17,15 @@ public class DictionaryViewModel {
     private final IDictionaryLoader loader;
     private IDictionaryData dictionary;
     private final ExecutorService executor;
+    private DictionaryObserver observer;  // Add this field
 
     public DictionaryViewModel() {
         this.loader = new JsonLoader();
         this.executor = Executors.newSingleThreadExecutor();
+    }
+
+    public void setObserver(DictionaryObserver observer) {
+        this.observer = observer;
     }
 
     public void initialize() {
@@ -35,9 +40,16 @@ public class DictionaryViewModel {
     public String translate(String word) {
         if (dictionary == null) {
             LOGGER.warn("Dictionary not initialized");
+            if (observer != null) {
+                observer.onError("Dictionary not initialized");
+            }
             return "";
         }
-        return dictionary.translate(word);
+        String result = dictionary.translate(word);
+        if (observer != null) {
+            observer.onTranslationComplete(result);
+        }
+        return result;
     }
 
     public Map<String, String> getAllEntries() {

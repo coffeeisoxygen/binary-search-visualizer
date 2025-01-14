@@ -1,60 +1,48 @@
 package com.coffeecode;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-
-import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 
+import com.coffeecode.view.DictionaryPanel;
+import com.coffeecode.view.InputPanel;
+import com.coffeecode.view.VisualizationPanel;
 import com.coffeecode.viewmodel.DictionaryObserver;
 import com.coffeecode.viewmodel.DictionaryViewModel;
 
 public class App implements DictionaryObserver {
     private final DictionaryViewModel viewModel;
     private final JFrame frame;
-    private final JTextField searchField;
-    private final JLabel resultLabel;
+    private final InputPanel inputPanel;
+    private final DictionaryPanel dictionaryPanel;
+    private final VisualizationPanel visualizationPanel;
 
     public App() {
         // Initialize ViewModel
         viewModel = new DictionaryViewModel();
         viewModel.initialize();
 
-        // Create UI components
+        // Initialize Panels
+        inputPanel = new InputPanel(viewModel);
+        dictionaryPanel = new DictionaryPanel(viewModel);
+        visualizationPanel = new VisualizationPanel();
+
+        // Create Main Frame
         frame = new JFrame("Dictionary Translator");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 200);
-        frame.setLayout(new BorderLayout(10, 10));
+        frame.setSize(800, 600);
 
-        // Search panel
-        JPanel searchPanel = new JPanel(new FlowLayout());
-        searchField = new JTextField(20);
-        JButton searchButton = new JButton("Translate");
-        searchPanel.add(searchField);
-        searchPanel.add(searchButton);
+        // Create Split Pane
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+        splitPane.setDividerLocation(400);
 
-        // Result panel
-        JPanel resultPanel = new JPanel(new FlowLayout());
-        resultLabel = new JLabel("Enter a word to translate");
-        resultPanel.add(resultLabel);
+        // Add Panels to Split Pane
+        splitPane.setLeftComponent(dictionaryPanel.getPanelWithInput(inputPanel));
+        splitPane.setRightComponent(visualizationPanel.getPanel());
 
-        // Add components to frame
-        frame.add(searchPanel, BorderLayout.NORTH);
-        frame.add(resultPanel, BorderLayout.CENTER);
-
-        // Add action listener
-        searchButton.addActionListener(e -> {
-            String word = searchField.getText().trim();
-            String translation = viewModel.translate(word);
-            onTranslationComplete(translation != null ? translation : "Not found");
-        });
-
-        // Center on screen
+        // Add Split Pane to Frame
+        frame.add(splitPane);
         frame.setLocationRelativeTo(null);
     }
 
@@ -64,7 +52,7 @@ public class App implements DictionaryObserver {
 
     @Override
     public void onTranslationComplete(String result) {
-        resultLabel.setText("Translation: " + result);
+        inputPanel.setResult(result);
     }
 
     @Override
@@ -75,6 +63,7 @@ public class App implements DictionaryObserver {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             App app = new App();
+            app.viewModel.setObserver(app);
             app.show();
         });
     }
