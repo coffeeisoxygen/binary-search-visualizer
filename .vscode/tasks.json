@@ -1,0 +1,18 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "shell",
+			"label": "maven-build",
+			"command": "mvn",
+			"args": [
+				"clean",
+				"compile",
+				"exec:java"
+			],
+			"presentation": {
+				"reveal": "silent"
+			}
+		}
+	]
+}

@@ -1,0 +1,52 @@
+@startuml Dictionary Search Sequence
+actor User
+participant "UI" as ui
+participant "Dictionary" as dict
+participant "BinarySearch" as search
+participant "DataLoader" as loader
+
+skinparam sequence {
+    LifeLineBorderColor black
+    LifeLineBackgroundColor #DDDDDD
+    ParticipantBorderColor black
+    ParticipantBackgroundColor #EEEEEE
+    ActorBorderColor black
+    ActorBackgroundColor #EEEEEE
+}
+
+== Initialization Phase ==
+skinparam backgroundColor #FFCCCC
+loader -> loader: loadJSONFiles()
+loader -> dict: storeDataInHashMap()
+dict -> dict: sortData()
+
+== Search Phase ==
+skinparam backgroundColor #CCFFCC
+User -> ui: inputWord()
+User -> ui: selectLanguage()
+ui -> dict: getSortedDictionary(language)
+dict --> ui: returnSortedData()
+
+ui -> search: binarySearch(word)
+activate search
+search -> search: setLow(0)
+search -> search: setHigh(size-1)
+loop while low <= high
+    search -> search: calculateMid()
+    search -> search: compareWord()
+    alt word found
+        search --> ui: returnWordDefinition()
+    else word < mid
+        search -> search: setHigh(mid-1)
+    else word > mid
+        search -> search: setLow(mid+1)
+    end
+end
+deactivate search
+
+alt word found
+    ui --> User: displayDefinition()
+else word not found
+    ui --> User: displayNotFound()
+end
+@enduml

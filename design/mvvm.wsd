@@ -1,0 +1,18 @@
+@startuml model-view-viewmodel
+actor User
+participant View
+participant ViewModel
+participant Model
+
+User -> View: Input word and language
+View -> ViewModel: searchWord(word, language)
+ViewModel -> Model: getSortedDictionary(language)
+Model --> ViewModel: return Sorted Map
+ViewModel -> ViewModel: Perform Binary Search
+alt Word Found
+    ViewModel --> View: setSearchResult()
+else Word Not Found
+    ViewModel --> View: setError()
+end
+View --> User: Display Result or Error
+@enduml
