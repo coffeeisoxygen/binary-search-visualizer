@@ -1,5 +1,7 @@
 package com.coffeecode;
 
+import java.io.IOException;
+
 import com.coffeecode.loader.IDictionaryLoader;
 import com.coffeecode.loader.JsonLoader;
 import com.coffeecode.model.IDictionaryData;
@@ -20,7 +22,7 @@ public class App {
             System.out.println("'cat' translation: " + dictionary.translate("cat"));
             System.out.println("'buku' translation: " + dictionary.translate("buku"));
 
-        } catch (Exception e) {
+        } catch (IOException e) {
             System.err.println("Error: " + e.getMessage());
         }
     }
