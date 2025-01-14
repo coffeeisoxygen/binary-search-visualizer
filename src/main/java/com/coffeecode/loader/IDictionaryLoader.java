@@ -2,6 +2,6 @@ package com.coffeecode.loader;
 
 import com.coffeecode.model.IDictionaryData;
 
-public interface DictionaryLoader {
+public interface IDictionaryLoader {
     IDictionaryData loadDictionaries();
 }

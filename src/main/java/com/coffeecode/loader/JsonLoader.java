@@ -13,7 +13,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class JsonLoader implements DictionaryLoader {
+public class JsonLoader implements IDictionaryLoader {
     private final ObjectMapper mapper;
     private final String englishPath;
     private final String indonesianPath;

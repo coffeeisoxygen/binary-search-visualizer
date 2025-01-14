@@ -1,33 +1,31 @@
 package com.coffeecode;
 
-import com.coffeecode.loader.DictionaryLoader;
+import com.coffeecode.loader.IDictionaryLoader;
 import com.coffeecode.loader.JsonLoader;
 import com.coffeecode.model.IDictionaryData;
+import com.coffeecode.service.DictionaryTranslationService;
+import com.coffeecode.service.TranslationService;
 
 public class App {
     public static void main(String[] args) {
-        DictionaryLoader loader = new JsonLoader();
-        IDictionaryData dictionary = null;
-
         try {
-            dictionary = loader.loadDictionaries();
+            IDictionaryLoader loader = new JsonLoader();
+            IDictionaryData dictionary = loader.loadDictionaries();
 
-            System.out.println("English to Indonesian:");
-            dictionary.getEnglishToIndonesian()
-                    .forEach((k, v) -> System.out.println(k + " -> " + v));
+            TranslationService translationService = new DictionaryTranslationService(dictionary);
 
-            System.out.println("\nIndonesian to English:");
-            dictionary.getIndonesianToEnglish()
-                    .forEach((k, v) -> System.out.println(k + " -> " + v));
+            // Display translations
+            translationService.displayAllTranslations();
+
+            // Test specific translations
+            System.out.println("\nTest translations:");
+            System.out.println("'cat' in Indonesian: " +
+                    translationService.translateToIndonesian("cat"));
+            System.out.println("'buku' in English: " +
+                    translationService.translateToEnglish("buku"));
 
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
-        }
-
-        if (dictionary != null) {
-            System.out.println("\nTest translations:");
-            System.out.println("'cat' in Indonesian: " + dictionary.translateEnglishToIndonesian("cat"));
-            System.out.println("'buku' in English: " + dictionary.translateIndonesianToEnglish("buku"));
         }
     }
 }
