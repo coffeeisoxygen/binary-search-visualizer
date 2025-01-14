@@ -42,9 +42,8 @@ public class JsonLoader implements IDictionaryLoader {
         DictionaryData.Builder builder = DictionaryData.builder();
 
         try {
-            DictionaryConfig config = new DictionaryConfig();
-            LOGGER.info("Loading dictionary from path: {}", config.getDictionaryPath());
-            JsonNode dictionaryData = mapper.readTree(new File(config.getDictionaryPath()))
+            LOGGER.info("Loading dictionary from path: {}", DictionaryConfig.getDictionaryPath());
+            JsonNode dictionaryData = mapper.readTree(new File(DictionaryConfig.getDictionaryPath()))
                     .get("data");
 
             for (JsonNode entry : dictionaryData) {
@@ -56,8 +55,13 @@ public class JsonLoader implements IDictionaryLoader {
             LOGGER.info("Dictionary loaded successfully");
             return builder.build();
         } catch (IOException e) {
-            LOGGER.error("Failed to load dictionary", e);
-            throw new DictionaryException("Failed to load dictionary", e);
+            String errorMessage = "Failed to load dictionary from path: " + DictionaryConfig.getDictionaryPath();
+            LOGGER.error(errorMessage, e);
+            throw new DictionaryException(errorMessage, e);
+        } catch (Exception e) {
+            String errorMessage = "Unexpected error occurred while loading dictionary";
+            LOGGER.error(errorMessage, e);
+            throw new DictionaryException(errorMessage, e);
         }
     }
 }
