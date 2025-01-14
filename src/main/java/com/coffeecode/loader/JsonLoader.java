@@ -1,3 +1,7 @@
+/**
+ * The `JsonLoader` class implements the `IDictionaryLoader` interface to load dictionary data from a
+ * JSON file using Jackson library in Java.
+ */
 package com.coffeecode.loader;
 
 import java.io.File;
