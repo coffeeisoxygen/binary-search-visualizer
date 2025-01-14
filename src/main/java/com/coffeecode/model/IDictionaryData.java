@@ -3,14 +3,12 @@ package com.coffeecode.model;
 import java.util.SortedMap;
 
 public interface IDictionaryData {
-    // Read-only operations
-    SortedMap<String, String> getEnglishToIndonesian();
+    // Single map access
+    SortedMap<String, String> getDictionary();
 
-    SortedMap<String, String> getIndonesianToEnglish();
+    // Translation methods
+    String translate(String word);
 
-    String translateEnglishToIndonesian(String word);
-
-    String translateIndonesianToEnglish(String word);
-
+    // Validation
     boolean isValid();
 }

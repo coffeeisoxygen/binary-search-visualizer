@@ -10,17 +10,15 @@ public class App {
             IDictionaryLoader loader = new JsonLoader();
             IDictionaryData dictionary = loader.loadDictionaries();
 
-            // Display translations directly
-            System.out.println("English to Indonesian:");
-            dictionary.getEnglishToIndonesian()
+            // Display translations
+            System.out.println("Dictionary entries:");
+            dictionary.getDictionary()
                     .forEach((k, v) -> System.out.println(k + " -> " + v));
 
             // Test translations
             System.out.println("\nTest translations:");
-            System.out.println("'cat' in Indonesian: " +
-                    dictionary.translateEnglishToIndonesian("cat"));
-            System.out.println("'buku' in English: " +
-                    dictionary.translateIndonesianToEnglish("buku"));
+            System.out.println("'cat' translation: " + dictionary.translate("cat"));
+            System.out.println("'buku' translation: " + dictionary.translate("buku"));
 
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());

@@ -7,51 +7,46 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 public class DictionaryData implements IDictionaryData {
-    private final TreeMap<String, String> englishToIndonesian;
-    private final TreeMap<String, String> indonesianToEnglish;
+    private final TreeMap<String, String> dictionary;
 
     private DictionaryData(Builder builder) {
-        this.englishToIndonesian = new TreeMap<>(builder.englishToIndonesian);
-        this.indonesianToEnglish = new TreeMap<>(builder.indonesianToEnglish);
+        this.dictionary = new TreeMap<>(builder.dictionary);
     }
 
     @Override
-    public SortedMap<String, String> getEnglishToIndonesian() {
-        return Collections.unmodifiableSortedMap(englishToIndonesian);
+    public SortedMap<String, String> getDictionary() {
+        return Collections.unmodifiableSortedMap(dictionary);
     }
 
     @Override
-    public SortedMap<String, String> getIndonesianToEnglish() {
-        return Collections.unmodifiableSortedMap(indonesianToEnglish);
-    }
-
-    @Override
-    public String translateEnglishToIndonesian(String word) {
-        return englishToIndonesian.get(word);
-    }
-
-    @Override
-    public String translateIndonesianToEnglish(String word) {
-        return indonesianToEnglish.get(word);
+    public String translate(String word) {
+        // Check word in both directions
+        String direct = dictionary.get(word);
+        if (direct != null) {
+            return direct;
+        }
+        // Find key by value
+        return dictionary.entrySet().stream()
+                .filter(entry -> entry.getValue().equals(word))
+                .map(Map.Entry::getKey)
+                .findFirst()
+                .orElse(null);
     }
 
     @Override
     public boolean isValid() {
-        return !englishToIndonesian.isEmpty() && !indonesianToEnglish.isEmpty();
+        return !dictionary.isEmpty();
     }
 
-    // Builder remains the same
     public static Builder builder() {
         return new Builder();
     }
 
     public static class Builder {
-        private final Map<String, String> englishToIndonesian = new HashMap<>();
-        private final Map<String, String> indonesianToEnglish = new HashMap<>();
+        private final Map<String, String> dictionary = new HashMap<>();
 
         public Builder addEntry(String english, String indonesian) {
-            englishToIndonesian.put(english, indonesian);
-            indonesianToEnglish.put(indonesian, english);
+            dictionary.put(english, indonesian);
             return this;
         }
 
