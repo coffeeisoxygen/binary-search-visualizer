@@ -28,6 +28,7 @@ public class DictionaryViewModel {
 
     public void setObserver(DictionaryObserver observer) {
         this.observer = observer;
+        this.visualizerViewModel.setDictionaryObserver(observer);
     }
 
     public void initialize() {
@@ -52,6 +53,10 @@ public class DictionaryViewModel {
             }
             return "";
         }
+
+        // Trigger visualization before translation
+        visualizerViewModel.visualizeSearch(word);
+
         String result = dictionary.translate(word);
         if (result == null || result.isEmpty()) {
             if (observer != null) {

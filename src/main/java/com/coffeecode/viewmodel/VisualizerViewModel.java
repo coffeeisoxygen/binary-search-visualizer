@@ -12,11 +12,12 @@ import com.coffeecode.visualizer.BinarySearchVisualizer.SearchState;
 import com.coffeecode.visualizer.SearchStep;
 import com.coffeecode.visualizer.SearchStepListener;
 
-public class VisualizerViewModel {
+public class VisualizerViewModel implements SearchStepListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(VisualizerViewModel.class);
     private BinarySearchVisualizer visualizer;
     private List<SearchStepListener> listeners = new ArrayList<>();
     private List<String> currentWords;
+    private DictionaryObserver dictionaryObserver;
 
     public void initialize(Map<String, String> dictionary) {
         List<String> englishWords = new ArrayList<>(dictionary.keySet());
@@ -27,6 +28,10 @@ public class VisualizerViewModel {
 
     public void addListener(SearchStepListener listener) {
         listeners.add(listener);
+    }
+
+    public void setDictionaryObserver(DictionaryObserver observer) {
+        this.dictionaryObserver = observer;
     }
 
     public void visualizeSearch(String word) {
@@ -57,4 +62,18 @@ public class VisualizerViewModel {
             listener.onSearchComplete(state);
         }
     }
+
+    @Override
+    public void onSearchComplete(SearchState finalState) {
+        if (dictionaryObserver != null && finalState == SearchState.NOT_FOUND) {
+            dictionaryObserver.onError("Word not found in dictionary");
+        }
+        notifySearchComplete(finalState);
+    }
+
+    @Override
+    public void onSearchStep(SearchStep step, List<String> words) {
+        notifyListeners(step);
+    }
+
 }
